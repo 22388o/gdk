@@ -435,6 +435,17 @@ namespace sdk {
             asset_id_from_json(net_params, addressee));
     }
 
+    void set_tx_output_value(const network_parameters& net_params, wally_tx_ptr& tx, uint32_t index,
+        const std::string& asset_tag, amount::value_type satoshi)
+    {
+        const bool is_liquid = net_params.is_liquid();
+        if (is_liquid) {
+            set_tx_output_commitment(tx, index, asset_tag, satoshi);
+        } else {
+            tx->outputs[index].satoshi = satoshi;
+        }
+    }
+
     void update_tx_size_info(const network_parameters& net_params, const wally_tx_ptr& tx, nlohmann::json& result)
     {
         const bool valid = tx->num_inputs != 0u && tx->num_outputs != 0u;
